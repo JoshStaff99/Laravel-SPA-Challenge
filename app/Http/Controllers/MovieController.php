@@ -17,6 +17,11 @@ class MovieController extends Controller
         $director = $request->input('director');
         $year     = $request->input('year');
 
+        // Get the full list of directors and years
+        $directors = Movie::select('director')->distinct()->pluck('director');
+        $years = Movie::selectRaw('YEAR(release_date) as year')->distinct()->pluck('year')->sortDesc();
+
+        // Query the movies based on the filters
         $movies = Movie::query()
             ->when($search, function ($q, $search) {
                 $q->where(function ($query) use ($search) {
@@ -36,15 +41,24 @@ class MovieController extends Controller
             ->withQueryString();
 
         return Inertia::render('Movies/Index', [
-            'movies' => $movies,
-            'filters' => [
+            'movies'    => $movies,
+            'filters'   => [
                 'search'   => $search,
                 'director' => $director,
                 'year'     => $year,
             ],
+            'directors' => $directors, // Send directors to frontend
+            'years'     => $years,     // Send years to frontend
         ]);
     }
 
+    /**
+     * Show the form to create a new movie
+     */
+    public function create()
+    {
+        return Inertia::render('Movies/Create');
+    }
 
     /**
      * Store a new movie

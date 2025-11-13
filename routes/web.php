@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MovieController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 /*
@@ -12,17 +13,10 @@ use Inertia\Inertia;
 |--------------------------------------------------------------------------
 */
 
-// Landing Page
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+// Redirect root to movies index
+Route::get('/', fn() => redirect()->route('movies.index'));
 
-// Public Movies index
+// Public Movies index (accessible without login)
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 
 /*
@@ -33,16 +27,14 @@ Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Dashboard
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Movies CRUD (only accessible when logged in)
+    // Movies CRUD
     Route::get('/movies/create', [MovieController::class, 'create'])->name('movies.create');
     Route::post('/movies', [MovieController::class, 'store'])->name('movies.store');
     Route::get('/movies/{movie}/edit', [MovieController::class, 'edit'])->name('movies.edit');
@@ -50,5 +42,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/movies/{movie}', [MovieController::class, 'destroy'])->name('movies.destroy');
 });
 
-require __DIR__.'/auth.php';
+/*
+|--------------------------------------------------------------------------
+| SPA-Friendly Logout
+|--------------------------------------------------------------------------
+*/
+Route::post('/logout', function () {
+    Auth::logout();
 
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    // No redirect: Inertia frontend will handle SPA header update
+    return back();
+});
+
+require __DIR__.'/auth.php';

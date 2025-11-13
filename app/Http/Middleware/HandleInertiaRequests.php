@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Illuminate\Support\Facades\Route;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -31,8 +32,20 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+
+            // Auth info shared globally
             'auth' => [
                 'user' => $request->user(),
+            ],
+
+            // Global route availability (for header links)
+            'canLogin' => Route::has('login'),
+            'canRegister' => Route::has('register'),
+
+            // Flash messages (optional)
+            'flash' => [
+                'success' => fn () => $request->session()->get('success'),
+                'error' => fn () => $request->session()->get('error'),
             ],
         ];
     }
