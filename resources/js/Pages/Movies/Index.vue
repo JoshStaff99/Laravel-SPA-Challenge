@@ -81,36 +81,35 @@
 <script setup>
 import { ref, computed, watch } from 'vue'
 import { Inertia } from '@inertiajs/inertia'
-import { usePage, Link as InertiaLink } from '@inertiajs/vue3'
+import { usePage, Link as InertiaLink } from '@inertiajs/inertia-vue3'
 import debounce from 'lodash/debounce'
 
 const page = usePage()
 
-// Debugging output
-console.log('Movies from backend:', page.props.movies)
-
 // Movies list
-const movies = computed(() => page.props.movies?.data ?? [])
+const movies = computed(() => page.props.value.movies?.data ?? [])
 
 // Filters
 const filters = ref({
-  search: page.props.filters?.search ?? '',
-  director: page.props.filters?.director ?? '',
-  year: page.props.filters?.year ?? '',
+  search: page.props.value.filters?.search ?? '',
+  director: page.props.value.filters?.director ?? '',
+  year: page.props.value.filters?.year ?? '',
 })
 
-// Get unique directors & years
+// Unique directors & years
 const directors = computed(() => [...new Set(movies.value.map(m => m.director))])
-const years = computed(() => [...new Set(
-  movies.value.map(m => m.release_date ? new Date(m.release_date).getFullYear() : null)
-)].filter(Boolean).sort((a, b) => b - a))
+const years = computed(() =>
+  [...new Set(movies.value.map(m => m.release_date ? new Date(m.release_date).getFullYear() : null))]
+    .filter(Boolean)
+    .sort((a, b) => b - a)
+)
 
 // Debounced filter application
 const applyFilters = debounce(() => {
   Inertia.get('/movies', filters.value, { preserveState: true, replace: true })
 }, 300)
 
-watch(filters, () => applyFilters(), { deep: true })
+watch(filters, applyFilters, { deep: true })
 
 // Pagination
 const goToPage = (pageNumber) => {
@@ -119,8 +118,7 @@ const goToPage = (pageNumber) => {
 
 // Format date
 const formatDate = (dateStr) => {
-  if (!dateStr) return 'N/A'
-  return new Date(dateStr).toLocaleDateString()
+  return dateStr ? new Date(dateStr).toLocaleDateString() : 'N/A'
 }
 
 // Delete movie

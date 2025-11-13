@@ -11,39 +11,39 @@ class MovieController extends Controller
     /**
      * Display a listing of the movies with optional filters.
      */
-        public function index(Request $request)
-        {
-            // Get filters
-            $search = $request->input('search');
-            $director = $request->input('director');
-            $year = $request->input('year');
+    public function index(Request $request)
+    {
+        $search   = $request->input('search');
+        $director = $request->input('director');
+        $year     = $request->input('year');
 
-            // Query movies with optional filters
-            $movies = Movie::query()
-                ->when($search, function($q, $search) {
-                    $q->where('title', 'like', "%{$search}%")
-                    ->orWhere('director', 'like', "%{$search}%")
-                    ->orWhere('tags', 'like', "%{$search}%");
-                })
-                ->when($director, function($q, $director) {
-                    $q->where('director', 'like', "%{$director}%");
-                })
-                ->when($year, function($q, $year) {
-                    $q->whereYear('release_date', $year);
-                })
-                ->orderBy('release_date', 'desc')
-                ->paginate(9)  // paginated results
-                ->withQueryString();
+        $movies = Movie::query()
+            ->when($search, function ($q, $search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('title', 'like', "%{$search}%")
+                        ->orWhere('director', 'like', "%{$search}%")
+                        ->orWhere('tags', 'like', "%{$search}%");
+                });
+            })
+            ->when($director, function ($q, $director) {
+                $q->where('director', 'like', "%{$director}%");
+            })
+            ->when($year, function ($q, $year) {
+                $q->whereYear('release_date', $year);
+            })
+            ->orderBy('release_date', 'desc')
+            ->paginate(9)
+            ->withQueryString();
 
-            return Inertia::render('Movies/Index', [
-                'movies' => $movies,
-                'filters' => [
-                    'search' => $search,
-                    'director' => $director,
-                    'year' => $year,
-                ],
-            ]);
-        }
+        return Inertia::render('Movies/Index', [
+            'movies' => $movies,
+            'filters' => [
+                'search'   => $search,
+                'director' => $director,
+                'year'     => $year,
+            ],
+        ]);
+    }
 
 
     /**
