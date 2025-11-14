@@ -125,4 +125,42 @@ class ApiTest extends TestCase
         $response->assertStatus(200)
                  ->assertJson(['message' => 'Logged out successfully']);
     }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function user_can_view_single_movie()
+    {
+        // Create a test movie
+        $movie = \App\Models\Movie::create([
+            'title' => 'Inception',
+            'director' => 'Christopher Nolan',
+            'duration' => 148,
+            'release_date' => '2010-07-16',
+            'description' => 'A mind-bending thriller about dreams within dreams.',
+            'tags' => 'sci-fi, thriller',
+        ]);
+
+        // Fetch the movie via API (public route)
+        $response = $this->getJson("/api/movies/{$movie->id}");
+
+        $response->assertStatus(200)
+                 ->assertJson([
+                     'data' => [
+                         'id' => $movie->id,
+                         'title' => 'Inception',
+                         'director' => 'Christopher Nolan',
+                         'duration' => 148,
+                         'release_date' => '2010-07-16',
+                         'description' => 'A mind-bending thriller about dreams within dreams.',
+                         'tags' => 'sci-fi, thriller',
+                     ]
+                 ]);
+    }
+
+    #[\PHPUnit\Framework\Attributes\Test]
+    public function user_gets_404_for_nonexistent_movie()
+    {
+        $response = $this->getJson('/api/movies/99999');
+
+        $response->assertStatus(404);
+    }
 }

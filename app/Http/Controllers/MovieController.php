@@ -16,6 +16,7 @@ class MovieController extends Controller
         $search   = $request->input('search');
         $director = $request->input('director');
         $year     = $request->input('year');
+        $tag      = $request->input('tag');
 
         // Get the full list of directors and years
         $directors = Movie::select('director')->distinct()->pluck('director');
@@ -36,6 +37,9 @@ class MovieController extends Controller
             ->when($year, function ($q, $year) {
                 $q->whereYear('release_date', $year);
             })
+            ->when($tag, function ($q, $tag) {
+                $q->where('tags', 'like', "%{$tag}%");
+            })
             ->orderBy('release_date', 'desc')
             ->paginate(9)
             ->withQueryString();
@@ -46,6 +50,7 @@ class MovieController extends Controller
                 'search'   => $search,
                 'director' => $director,
                 'year'     => $year,
+                'tag'      => $tag,
             ],
             'directors' => $directors, // Send directors to frontend
             'years'     => $years,     // Send years to frontend
@@ -77,6 +82,14 @@ class MovieController extends Controller
         Movie::create($validated);
 
         return redirect()->route('movies.index')->with('success', 'Movie added!');
+    }
+
+    /**
+     * Show a single movie detail page
+     */
+    public function show(Movie $movie)
+    {
+        return Inertia::render('Movies/Show', ['movie' => $movie]);
     }
 
     /**

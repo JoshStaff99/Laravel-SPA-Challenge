@@ -87,4 +87,38 @@ class MovieTest extends TestCase
 
         $this->assertTrue($movies->count() > 0);
     }
+
+    /**
+    * Test that a movie can be shown and works as intended.
+    */
+
+    public function test_movie_show_page_displays_correct_data()
+    {
+        $movie = Movie::create([
+            'title' => 'The Matrix',
+            'director' => 'Lana Wachowski, Lilly Wachowski',
+            'description' => 'A computer hacker learns the truth about reality.',
+            'release_date' => '1999-03-31',
+            'duration' => 136,
+            'tags' => 'sci-fi, cyberpunk, action',
+        ]);
+
+        $response = $this->get(route('movies.show', $movie->id));
+
+        $response->assertStatus(200)
+                 ->assertInertia(fn ($page) => $page
+                     ->component('Movies/Show')
+                     ->has('movie')
+                     ->where('movie.title', 'The Matrix')
+                     ->where('movie.director', 'Lana Wachowski, Lilly Wachowski')
+                     ->where('movie.tags', 'sci-fi, cyberpunk, action')
+                 );
+    }
+
+    public function test_movie_show_page_not_found()
+    {
+        $response = $this->get(route('movies.show', 999));
+
+        $response->assertStatus(404);
+    }
 }

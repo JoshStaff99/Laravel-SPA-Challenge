@@ -12,13 +12,13 @@
           </span>
         </div>
 
-        <!-- Navigation -->
-        <nav class="flex space-x-4 items-center">
-          <Link href="/movies" class="hover:underline">Home</Link>
+        <!-- Desktop Navigation -->
+        <nav class="hidden sm:flex space-x-4 items-center">
+          <Link :href="route('movies.index')" class="hover:underline">Home</Link>
 
           <!-- Only visible if logged in -->
           <template v-if="auth?.user">
-            <Link href="/movies/create" class="hover:underline">Add Movie</Link>
+            <Link :href="route('movies.create')" class="hover:underline">Add Movie</Link>
             <button @click="logout" class="hover:underline text-red-400">
               Logout
             </button>
@@ -26,10 +26,39 @@
 
           <!-- Visible if NOT logged in -->
           <template v-else>
-            <Link v-if="canLogin" href="/login" class="hover:underline">Login</Link>
-            <Link v-if="canRegister" href="/register" class="hover:underline">Register</Link>
+            <Link v-if="canLogin" :href="route('login')" class="hover:underline">Login</Link>
+            <Link v-if="canRegister" :href="route('register')" class="hover:underline">Register</Link>
           </template>
         </nav>
+
+        <!-- Mobile toggle -->
+        <div class="sm:hidden">
+          <button @click="showMobile = !showMobile" aria-label="Toggle menu" class="p-2 rounded-md hover:bg-gray-700">
+            <svg v-if="!showMobile" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile menu panel -->
+      <div v-show="showMobile" class="sm:hidden bg-gray-800 border-t border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col space-y-2">
+          <Link :href="route('movies.index')" class="text-white">Home</Link>
+
+          <template v-if="auth?.user">
+            <Link :href="route('movies.create')" class="text-white">Add Movie</Link>
+            <button @click="logout" class="text-red-400 text-left">Logout</button>
+          </template>
+
+          <template v-else>
+            <Link v-if="canLogin" :href="route('login')" class="text-white">Login</Link>
+            <Link v-if="canRegister" :href="route('register')" class="text-white">Register</Link>
+          </template>
+        </div>
       </div>
     </header>
 
@@ -48,7 +77,7 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
-import { reactive, computed } from 'vue'
+import { reactive, computed, ref } from 'vue'
 
 // Access global Inertia props
 const page = usePage()
@@ -58,6 +87,9 @@ const auth = reactive(page.props.value?.auth ?? {})
 
 const canLogin = computed(() => page.props.value?.canLogin ?? false)
 const canRegister = computed(() => page.props.value?.canRegister ?? false)
+
+// Mobile menu state
+const showMobile = ref(false)
 
 // SPA logout
 const logout = () => {

@@ -13,7 +13,14 @@
           v-model="filters.search"
           type="text"
           placeholder="🔍 Search by title, director, or tags..."
-          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/3 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/4 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+
+        <input
+          v-model="filters.tag"
+          type="text"
+          placeholder="# Tag (e.g. sci-fi)"
+          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/4 focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
 
         <select
@@ -38,9 +45,9 @@
         <div
           v-for="movie in movies"
           :key="movie.id"
-          class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-200"
+          class="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-xl transition-shadow duration-200 flex flex-col h-full"
         >
-          <div class="p-5">
+          <div class="p-5 flex-1">
             <h2 class="text-xl font-semibold text-gray-800 mb-2">{{ movie.title }}</h2>
             <p class="text-gray-600 mb-1"><strong>Director:</strong> {{ movie.director }}</p>
             <p class="text-gray-600 mb-1"><strong>Duration:</strong> {{ movie.duration }} mins</p>
@@ -48,7 +55,8 @@
             <p class="text-gray-700 mt-3 text-sm">{{ movie.description }}</p>
           </div>
           <div class="bg-gray-50 border-t p-3 flex justify-end space-x-3">
-            <InertiaLink :href="`/movies/${movie.id}/edit`" class="text-blue-500 hover:text-blue-700">Edit</InertiaLink>
+            <InertiaLink :href="route('movies.show', movie.id)" class="text-blue-500 hover:text-blue-700">View</InertiaLink>
+            <InertiaLink :href="route('movies.edit', movie.id)" class="text-blue-500 hover:text-blue-700">Edit</InertiaLink>
             <button @click="deleteMovie(movie.id)" class="text-red-500 hover:text-red-700">Delete</button>
           </div>
         </div>
@@ -95,6 +103,7 @@ const movies = computed(() => page.props.value.movies?.data ?? [])
 // Filters
 const filters = ref({
   search: page.props.value.filters?.search ?? '',
+  tag: page.props.value.filters?.tag ?? '',
   director: page.props.value.filters?.director ?? '',
   year: page.props.value.filters?.year ?? '',
 })

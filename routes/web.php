@@ -16,7 +16,7 @@ use Inertia\Inertia;
 // Redirect root to movies index
 Route::get('/', fn() => redirect()->route('movies.index'));
 
-// Public Movies index (accessible without login)
+// Public Movies routes (accessible without login)
 Route::get('/movies', [MovieController::class, 'index'])->name('movies.index');
 
 /*
@@ -58,3 +58,6 @@ Route::post('/logout', function () {
 });
 
 require __DIR__.'/auth.php';
+
+// Public show route must come after more specific routes (create/edit)
+Route::get('/movies/{movie}', [MovieController::class, 'show'])->name('movies.show');

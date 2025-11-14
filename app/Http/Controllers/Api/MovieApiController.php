@@ -16,7 +16,40 @@ class MovieApiController extends Controller
      */
     public function index(Request $request)
     {
-        $movies = Movie::all(); // You can add filters and pagination if needed
+        $search = $request->query('search');
+        $director = $request->query('director');
+        $year = $request->query('year');
+        $tag = $request->query('tag');
+
+        $perPage = (int) $request->query('per_page', 15);
+
+        $query = Movie::query();
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('director', 'like', "%{$search}%")
+                  ->orWhere('tags', 'like', "%{$search}%");
+            });
+        }
+
+        if ($director) {
+            $query->where('director', 'like', "%{$director}%");
+        }
+
+        if ($year) {
+            $query->whereYear('release_date', $year);
+        }
+
+        if ($tag) {
+            // simple tag matching against comma-separated tags
+            $query->where('tags', 'like', "%{$tag}%");
+        }
+
+        $movies = $query->orderBy('release_date', 'desc')
+                        ->paginate($perPage)
+                        ->withQueryString();
+
         return MovieResource::collection($movies);
     }
 

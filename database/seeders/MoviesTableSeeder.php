@@ -38,7 +38,7 @@ class MoviesTableSeeder extends Seeder
                 'title' => 'The Lord of the Rings: The Return of the King',
                 'description' => 'The former Fellowship of the Ring prepares for the final battle. While Frodo and Sam approach Mount Doom to destroy the One Ring, they follow Gollum, unaware of the path he is leading them on.',
                 'director' => 'Peter Jackson',
-                'release_date' => '2002-12-01',
+                'release_date' => '2003-12-17',
                 'duration' => 201,
                 'tags' => 'fantasy, adventure, epic',
                 'created_at' => now(),
