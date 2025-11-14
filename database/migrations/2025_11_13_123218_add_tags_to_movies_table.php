@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('movies', function (Blueprint $table) {
-            // You can use string if you just store simple comma-separated tags.
             $table->string('tags')->nullable()->after('duration');
-            // Or use JSON if you plan to store an array of tags:
-            // $table->json('tags')->nullable()->after('duration');
         });
     }
 

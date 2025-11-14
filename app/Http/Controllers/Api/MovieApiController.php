@@ -7,7 +7,7 @@ use App\Http\Resources\MovieResource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class MovieController extends Controller
+class MovieApiController extends Controller
 {
     /**
      * Display a listing of the movies.

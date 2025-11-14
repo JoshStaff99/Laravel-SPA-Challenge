@@ -34,7 +34,10 @@ class ApiTest extends TestCase
     public function user_cannot_access_protected_routes_without_token()
     {
         // Trying to access a protected route without authentication
-        $response = $this->getJson('/api/movies');
+        $response = $this->postJson('/api/movies', [
+            'title' => 'Test Movie',
+            'director' => 'Test Director',
+        ]);
 
         // Assert 401 Unauthorized response
         $response->assertStatus(401);
@@ -59,16 +62,28 @@ class ApiTest extends TestCase
         ], $headers);
 
         $response->assertStatus(201)
-                 ->assertJson(['title' => 'Test Movie']);
+                ->assertJson([
+                    'data' => [
+                        'title' => 'Test Movie',
+                        'director' => 'Test Director',
+                        'duration' => 120,
+                        'release_date' => '2025-01-01',
+                        'description' => 'Test description',
+                    ]
+                ]);
 
         // Try to read the created movie
         $response = $this->getJson('/api/movies', $headers);
 
         $response->assertStatus(200)
-                 ->assertJsonStructure([['title', 'director']]);
+                ->assertJsonStructure([
+                    'data' => [
+                        '*' => ['id', 'title', 'director', 'duration', 'release_date', 'description']
+                    ]
+                ]);
 
         // Try to update the movie
-        $movie = $response->json()[0]; // Assuming we got the first movie
+        $movie = $response->json()['data'][0]; // Assuming we got the first movie
         $response = $this->putJson("/api/movies/{$movie['id']}", [
             'title' => 'Updated Movie',
             'director' => 'Updated Director',
@@ -78,13 +93,21 @@ class ApiTest extends TestCase
         ], $headers);
 
         $response->assertStatus(200)
-                 ->assertJson(['title' => 'Updated Movie']);
+                ->assertJson([
+                    'data' => [
+                        'title' => 'Updated Movie',
+                        'director' => 'Updated Director',
+                        'duration' => 130,
+                        'release_date' => '2025-01-02',
+                        'description' => 'Updated description',
+                    ]
+                ]);
 
-        // Delete the movie
+        // Delete the movie and expect a 204 No Content response
         $response = $this->deleteJson("/api/movies/{$movie['id']}", [], $headers);
 
-        $response->assertStatus(200)
-                 ->assertJson(['message' => 'Movie deleted successfully']);
+        // Assert the deletion response status code is 204
+        $response->assertStatus(204); // No Content expected after deletion
     }
 
     #[\PHPUnit\Framework\Attributes\Test]
