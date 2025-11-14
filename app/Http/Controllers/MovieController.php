@@ -75,7 +75,8 @@ class MovieController extends Controller
             'director' => 'required|string|max:255',
             'description' => 'nullable|string',
             'duration' => 'nullable|integer',
-            'release_date' => 'nullable|date',
+            // require ISO date (Y-m-d) to avoid invalid dates being inserted into DB
+            'release_date' => 'nullable|date_format:Y-m-d',
             'tags' => 'nullable|string',
         ]);
 

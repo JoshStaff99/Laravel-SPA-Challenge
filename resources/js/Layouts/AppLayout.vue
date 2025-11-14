@@ -69,7 +69,7 @@
 
     <!-- Footer -->
     <footer class="bg-gray-900 text-white py-4 text-center">
-      <p class="text-sm">© {{ new Date().getFullYear() }} Movie Library. All rights reserved.</p>
+      <p class="text-sm">© {{ new Date().getFullYear() }} Movie Library Joshua Stafford. All rights reserved.</p>
     </footer>
   </div>
 </template>

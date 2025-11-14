@@ -56,8 +56,13 @@
           </div>
           <div class="bg-gray-50 border-t p-3 flex justify-end space-x-3">
             <InertiaLink :href="route('movies.show', movie.id)" class="text-blue-500 hover:text-blue-700">View</InertiaLink>
-            <InertiaLink :href="route('movies.edit', movie.id)" class="text-blue-500 hover:text-blue-700">Edit</InertiaLink>
-            <button @click="deleteMovie(movie.id)" class="text-red-500 hover:text-red-700">Delete</button>
+            <template v-if="isAuth">
+              <InertiaLink :href="route('movies.edit', movie.id)" class="text-blue-500 hover:text-blue-700">Edit</InertiaLink>
+              <button @click="deleteMovie(movie.id)" class="text-red-500 hover:text-red-700">Delete</button>
+            </template>
+            <template v-else>
+              <InertiaLink :href="route('login')" class="text-gray-500 hover:text-gray-700">Login to edit</InertiaLink>
+            </template>
           </div>
         </div>
       </div>
@@ -133,13 +138,28 @@ const formatDate = (dateStr) => {
   return dateStr ? new Date(dateStr).toLocaleDateString() : 'N/A'
 }
 
-// Delete movie
+// Auth state
+const isAuth = computed(() => !!page.props.value.auth?.user)
+
+// Delete movie (only for authenticated users)
 const deleteMovie = (id) => {
-  if (confirm('Are you sure you want to delete this movie?')) {
-    Inertia.delete(`/movies/${id}`).then(() => {
-      // Immediately remove the movie from the list in the frontend
-      movies.value = movies.value.filter(movie => movie.id !== id);
-    });
+  if (!isAuth.value) {
+    // Redirect guests to login before attempting destructive actions
+    Inertia.get('/login')
+    return
   }
+
+  if (!confirm('Are you sure you want to delete this movie?')) return
+
+  Inertia.delete(`/movies/${id}`, {}, {
+    preserveState: true,
+    onSuccess: () => {
+      // Immediately remove the movie from the list in the frontend
+      movies.value = movies.value.filter(movie => movie.id !== id)
+    },
+    onError: (err) => {
+      console.error('Delete failed', err)
+    }
+  })
 }
 </script>

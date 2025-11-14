@@ -44,21 +44,26 @@
             <p class="text-gray-700 leading-relaxed whitespace-pre-wrap">{{ movie.description || 'No description provided.' }}</p>
           </div>
 
-          <!-- Action Buttons -->
-          <div class="flex flex-col sm:flex-row sm:space-x-4 border-t pt-6">
-            <InertiaLink
-              :href="route('movies.edit', movie.id)"
-              class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition text-center"
-            >
-              Edit Movie
-            </InertiaLink>
-            <button
-              @click="deleteMovie"
-              class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition mt-3 sm:mt-0"
-            >
-              Delete Movie
-            </button>
-          </div>
+                  <!-- Action Buttons -->
+                  <div class="flex flex-col sm:flex-row sm:space-x-4 border-t pt-6">
+                    <template v-if="isAuth">
+                      <InertiaLink
+                        :href="route('movies.edit', movie.id)"
+                        class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition text-center"
+                      >
+                        Edit Movie
+                      </InertiaLink>
+                      <button
+                        @click="deleteMovie"
+                        class="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition mt-3 sm:mt-0"
+                      >
+                        Delete Movie
+                      </button>
+                    </template>
+                    <template v-else>
+                      <InertiaLink :href="route('login')" class="bg-gray-300 text-gray-800 px-6 py-2 rounded hover:bg-gray-400 transition text-center">Login to edit</InertiaLink>
+                    </template>
+                  </div>
         </div>
       </div>
     </div>
@@ -66,7 +71,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { usePage, Link as InertiaLink } from '@inertiajs/inertia-vue3'
 import { Inertia } from '@inertiajs/inertia'
 import AppLayout from '@/Layouts/AppLayout.vue'
@@ -86,12 +91,25 @@ const parseTags = (tagsStr) => {
     : []
 }
 
-// Delete movie with confirmation
+// Auth state
+const isAuth = computed(() => !!page.props.value.auth?.user)
+
+// Delete movie with confirmation (only for authenticated users)
 const deleteMovie = () => {
-  if (confirm('Are you sure you want to delete this movie?')) {
-    Inertia.delete(route('movies.destroy', movie.value.id)).then(() => {
-      // Redirect to movies index on success
-    })
+  if (!isAuth.value) {
+    Inertia.get('/login')
+    return
   }
+
+  if (!confirm('Are you sure you want to delete this movie?')) return
+
+  Inertia.delete(route('movies.destroy', movie.value.id), {}, {
+    onSuccess: () => {
+      Inertia.visit(route('movies.index'))
+    },
+    onError: (err) => {
+      console.error('Delete failed', err)
+    }
+  })
 }
 </script>
