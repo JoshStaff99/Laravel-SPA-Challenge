@@ -25,18 +25,24 @@
 
         <select
           v-model="filters.director"
-          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/4 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/4 
+                focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
           <option value="">All Directors</option>
-          <option v-for="dir in directors" :key="dir" :value="dir">{{ dir }}</option>
+          <option v-for="dir in directors" :key="dir" :value="dir">
+            {{ dir }}
+          </option>
         </select>
 
         <select
           v-model="filters.year"
-          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/4 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+          class="border border-gray-300 rounded-lg p-2 w-full sm:w-1/4 
+                focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
           <option value="">All Years</option>
-          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+          <option v-for="y in years" :key="y" :value="y">
+            {{ y }}
+          </option>
         </select>
       </div>
 
@@ -84,19 +90,44 @@
       </div>
 
       <!-- Pagination -->
-      <div v-if="page.props.movies && page.props.movies.last_page > 1" class="flex justify-center mt-10 space-x-2">
+      <div v-if="pagination && pagination.last_page > 1" class="flex justify-center items-center mt-10 space-x-2">
+        <!-- Prev -->
         <button
-          v-for="p in page.props.movies.last_page"
+          @click="goToPage(pagination.current_page - 1)"
+          :disabled="pagination.current_page === 1"
+          class="px-4 py-2 rounded-md border transition-colors duration-150"
+          :class="pagination.current_page === 1
+            ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed'
+            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'"
+        >
+          Prev
+        </button>
+
+        <!-- Page Numbers -->
+        <button
+          v-for="p in pagination.last_page"
           :key="p"
           @click="goToPage(p)"
           :class="[
             'px-4 py-2 rounded-md border transition-colors duration-150',
-            page.props.movies.current_page === p
+            pagination.current_page === p
               ? 'bg-blue-500 text-white border-blue-500'
               : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'
           ]"
         >
           {{ p }}
+        </button>
+
+        <!-- Next -->
+        <button
+          @click="goToPage(pagination.current_page + 1)"
+          :disabled="pagination.current_page === pagination.last_page"
+          class="px-4 py-2 rounded-md border transition-colors duration-150"
+          :class="pagination.current_page === pagination.last_page
+            ? 'bg-gray-200 text-gray-400 border-gray-200 cursor-not-allowed'
+            : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-100'"
+        >
+          Next
         </button>
       </div>
     </div>
@@ -115,6 +146,9 @@ const page = usePage()
 // Movies list
 const movies = computed(() => page.props.value.movies?.data ?? [])
 
+// Pagination object (use page.props.value to avoid template ref confusion)
+const pagination = computed(() => page.props.value.movies ?? null)
+
 // Filters
 const filters = ref({
   search: page.props.value.filters?.search ?? '',
@@ -124,12 +158,8 @@ const filters = ref({
 })
 
 // Unique directors & years
-const directors = computed(() => [...new Set(movies.value.map(m => m.director))])
-const years = computed(() =>
-  [...new Set(movies.value.map(m => m.release_date ? new Date(m.release_date).getFullYear() : null))]
-    .filter(Boolean)
-    .sort((a, b) => b - a)
-)
+const directors = computed(() => page.props.value.directors ?? [])
+const years = computed(() => page.props.value.years ?? [])
 
 // Debounced filter application
 const applyFilters = debounce(() => {
