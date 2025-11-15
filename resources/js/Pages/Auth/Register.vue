@@ -60,7 +60,7 @@ const submit = () => {
                                 required
                                 autofocus
                                 autocomplete="name"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 placeholder="John Doe"
                             />
                             <p v-if="form.errors.name" class="mt-2 text-sm text-red-600">
@@ -79,7 +79,7 @@ const submit = () => {
                                 v-model="form.email"
                                 required
                                 autocomplete="username"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 placeholder="you@example.com"
                             />
                             <p v-if="form.errors.email" class="mt-2 text-sm text-red-600">
@@ -98,7 +98,7 @@ const submit = () => {
                                 v-model="form.password"
                                 required
                                 autocomplete="new-password"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 placeholder="••••••••"
                             />
                             <p v-if="form.errors.password" class="mt-2 text-sm text-red-600">
@@ -117,7 +117,7 @@ const submit = () => {
                                 v-model="form.password_confirmation"
                                 required
                                 autocomplete="new-password"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent outline-none transition"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition"
                                 placeholder="••••••••"
                             />
                             <p v-if="form.errors.password_confirmation" class="mt-2 text-sm text-red-600">
@@ -129,7 +129,7 @@ const submit = () => {
                         <button
                             type="submit"
                             :disabled="form.processing"
-                            class="w-full bg-green-600 hover:bg-green-700 disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
+                            class="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold py-2 px-4 rounded-lg transition duration-200"
                         >
                             {{ form.processing ? 'Creating Account...' : 'Create Account' }}
                         </button>
@@ -139,7 +139,7 @@ const submit = () => {
                     <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
                         <p class="text-center text-sm text-gray-600">
                             Already have an account?
-                            <Link href="/login" class="text-green-600 hover:text-green-700 font-medium">
+                            <Link href="/login" class="text-blue-600 hover:text-blue-700 font-medium">
                                 Sign in here
                             </Link>
                         </p>

@@ -1,25 +1,30 @@
 # Laravel-SPA-Challenge
 
-A single-page application built with Laravel 12, Inertia.js, Vue.js, and Tailwind CSS for managing a movie collection. The application demonstrates CRUD operations, authentication via API tokens, and a responsive user interface.
+A single-page application built with Laravel 12, Inertia.js, Vue.js 3, and Tailwind CSS for managing a movie collection. The application demonstrates CRUD operations, session-based authentication, API token authentication via Sanctum, and a fully responsive mobile-first user interface.
 
 ## Features
 
-- **Display Movies**: View a list of all movies with details including title, director, release date, and duration
-- **Search & Filter**: Filter movies by title, director, or tags
+- **Display Movies**: View a list of all movies with details including title, director, release date, duration, and tags
+- **Search & Multi-Filter**: Filter movies by title, director, release year, and tags
+- **Tag Display**: View tags as visual chips on both movie grid and detail pages
 - **CRUD Operations**: Add, edit, and delete movies (requires authentication)
-- **RESTful API**: Full REST API with proper validation and error handling
-- **Authentication**: Sanctum API token-based authentication
-- **Responsive Design**: Tailwind CSS for responsive, mobile-friendly UI
-- **Single Page Application**: Inertia.js + Vue.js for seamless page transitions
+- **Authentication Guards**: Guests are redirected to login; only authenticated users can edit/delete
+- **RESTful API**: Full REST API with proper validation and error handling (Sanctum token-based)
+- **Session Authentication**: Web routes use Laravel session authentication for Inertia
+- **Responsive Design**: Mobile-first Tailwind CSS with burger menu for small screens
+- **Single Page Application**: Inertia.js + Vue 3 for seamless page transitions without full page reloads
 
 ## Technology Stack
 
 - **Backend**: Laravel 12
 - **Frontend**: Vue.js 3 + Inertia.js
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS 3
 - **Database**: MySQL
-- **API Authentication**: Laravel Sanctum
+- **API Authentication**: Laravel Sanctum (token-based)
+- **Session Authentication**: Laravel session middleware
 - **Build Tool**: Vite
+- **Testing**: PHPUnit with RefreshDatabase
+- **HTTP Client**: Axios (via Inertia)
 
 ## Prerequisites
 
@@ -33,7 +38,7 @@ A single-page application built with Laravel 12, Inertia.js, Vue.js, and Tailwin
 
 If you want to get the app running quickly:
 
-```bash
+\\\ash
 # Clone and navigate
 git clone https://github.com/JoshStaff99/Laravel-SPA-Challenge.git
 cd Laravel-SPA-Challenge
@@ -43,299 +48,406 @@ composer run-script setup
 
 # Start development servers
 composer run dev
-```
+\\\
 
 This runs all necessary setup steps including composer install, npm install, migrations, and seeding.
 
 ## Installation
 
 ### 1. Clone the repository
-```bash
+\\\ash
 git clone https://github.com/JoshStaff99/Laravel-SPA-Challenge.git
 cd Laravel-SPA-Challenge
-```
+\\\
 
 ### 2. Install PHP dependencies
-...bash
+\\\ash
 composer install
-3. Install Node dependencies
-...bash
+\\\
+
+### 3. Install Node dependencies
+\\\ash
 npm install
-4. Environment setup
-...bash
+\\\
+
+### 4. Environment setup
+\\\ash
 cp .env.example .env
 php artisan key:generate
-5. Database setup
-Update your .env file with database credentials:
+\\\
 
-env
+### 5. Database setup
+
+Update your \.env\ file with database credentials:
+
+\\\env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=laravel_spa_challenge
 DB_USERNAME=root
 DB_PASSWORD=
+\\\
 
 Ensure the database exists before running migrations:
 
-CREATE DATABASE laravel_spa_challenge;
+\\\ash
+mysql -u root -p -e "CREATE DATABASE laravel_spa_challenge;"
+\\\
 
-6. Run migrations and seeders
-...bash
+### 6. Run migrations and seeders
+\\\ash
 php artisan migrate --seed
+\\\
 
-7. Build frontend assets
-...bash
+### 7. Build frontend assets
+\\\ash
 npm run build
-Usage
-Development Environment
+\\\
+
+## Usage
+
+### Development Environment
+
 To start the development server with live reload:
 
-...bash
+\\\ash
+# Terminal 1: Start Vite dev server (watches Vue/JS/CSS changes)
 npm run dev
-In a separate terminal, start the Laravel server:
 
-...bash
+# Terminal 2: Start Laravel server
 php artisan serve
-The application will be available at http://localhost:8000
+\\\
 
-Production Build
-```bash
+The application will be available at \http://localhost:8000\
+
+### Production Build
+\\\ash
 npm run build
 php artisan serve
-```
+\\\
 
 ## Deployment
 
 To deploy this application to a production server:
 
 1. **Clone repository** on your server
-2. **Configure environment**: Copy `.env.example` to `.env` and update with production settings
-3. **Install dependencies**: `composer install --no-dev` and `npm install`
-4. **Generate app key**: `php artisan key:generate`
-5. **Run migrations**: `php artisan migrate --force`
-6. **Seed database** (optional): `php artisan db:seed --force`
-7. **Build frontend**: `npm run build`
-8. **Cache config**: `php artisan config:cache && php artisan route:cache`
-9. **Set permissions**: Ensure `storage/` and `bootstrap/cache/` are writable
-10. **Use a web server**: Configure Nginx or Apache to point to the `public/` directory
+2. **Configure environment**: Copy \.env.example\ to \.env\ and update with production settings
+3. **Install dependencies**: \composer install --no-dev\ and \
+pm install\
+4. **Generate app key**: \php artisan key:generate\
+5. **Run migrations**: \php artisan migrate --force\
+6. **Seed database** (optional): \php artisan db:seed --force\
+7. **Build frontend**: \
+pm run build\
+8. **Cache config**: \php artisan config:cache && php artisan route:cache\
+9. **Set permissions**: Ensure \storage/\ and \ootstrap/cache/\ are writable
+10. **Use a web server**: Configure Nginx or Apache to point to the \public/\ directory
 
-Recommended web server configuration:
+### Recommended web server configuration:
 - **Nginx** with PHP-FPM
 - **Apache** with mod_php or PHP-FPM
 - Use a reverse proxy (Nginx) in front for SSL/HTTPS
 - Enable CORS if frontend and API are on different domains
 
-## API
+## API Documentation
 
 ### Authentication Flow
 
-1. **Register/Login**: Get an API token via POST `/api/login`
-2. **Include token**: Add `Authorization: Bearer {token}` header to protected requests
-3. **Logout**: Call POST `/api/logout` to invalidate token
+The application supports two authentication methods:
+
+#### Web Routes (Inertia/Session)
+- Uses Laravel's session middleware for authenticated routes
+- Login/Register pages handle session-based authentication
+- Guests are redirected to login page
+- Cookies contain session tokens
+
+#### API Routes (Sanctum Token)
+1. **Register/Login**: Get an API token via \POST /api/login\
+2. **Include token**: Add \Authorization: Bearer {token}\ header to protected requests
+3. **Logout**: Call \POST /api/logout\ to invalidate token
 
 ### Response Format
 
-Successful responses (2xx):
-```json
+**Successful responses (2xx):**
+\\\json
 {
   "data": {...},
   "meta": {
     "pagination": {...}
   }
 }
-```
+\\\
 
-Error responses:
-```json
+**Error responses:**
+\\\json
 {
   "message": "Error message",
   "errors": {
     "field": ["Error detail"]
   }
 }
-```
+\\\
 
-## API
-Public Routes
-POST /api/login - Login and receive API token
+### Public API Routes
 
-Request body: { "email": "user@example.com", "password": "password" }
+**POST /api/login** - Login and receive API token
+- Request: \{ "email": "user@example.com", "password": "password" }\
+- Response: \{ "user": {...}, "token": "..." }\
 
-Response: { "user": {...}, "token": "..." }
+**GET /api/movies** - Get all movies (paginated)
+- Query params: \?search=title&director=name&year=2024&tag=sci-fi&page=1&per_page=15\
+- Response: Array of movies with pagination metadata
 
-GET /api/movies - Get all movies (paginated)
+**GET /api/movies/{id}** - Get a specific movie
+- Response: Single movie object with all fields
 
-Query params: ?search=title&page=1&per_page=15
+### Protected API Routes
 
-Response: Array of movies with pagination
+All protected routes require the \Authorization: Bearer {token}\ header.
 
-GET /api/movies/{id} - Get a specific movie
+**POST /api/movies** - Create a new movie
+- Request: \{ "title": "...", "director": "...", "description": "...", "duration": 120, "release_date": "2025-01-01", "tags": "sci-fi,action" }\
+- Response: Created movie object (201)
 
-Protected Routes (Requires Authentication)
-Add Authorization: Bearer {token} header to all protected routes that require authentication.
+**PUT /api/movies/{id}** - Update a movie (all fields required)
+- Request: Same as POST /api/movies
+- Response: Updated movie object (200)
 
-POST /api/movies - Create a new movie
+**PATCH /api/movies/{id}** - Partially update a movie
+- Request: Partial fields \{ "title": "New Title" }\
+- Response: Updated movie object (200)
 
-Request body: { "title": "...", "director": "...", "description": "...", "duration": 120, "release_date": "2025-01-01", "tags": "..." }
+**DELETE /api/movies/{id}** - Delete a movie
+- Response: Empty (204)
 
-PUT /api/movies/{id} - Update a movie (all fields required)
+**POST /api/logout** - Logout and invalidate token
+- Response: \{ "message": "Logged out" }\
 
-PATCH /api/movies/{id} - Partially update a movie
+### Query Parameters
 
-DELETE /api/movies/{id} - Delete a movie
+**Movies List Filtering:**
+- \search\ - Filter by title or director name (substring match)
+- \director\ - Exact director name match
+- \year\ - Release year filter
+- \	ag\ - Filter by tag (comma-separated tags in database)
+- \page\ - Pagination page number (default: 1)
+- \per_page\ - Results per page (default: 15)
 
-POST /api/logout - Logout and invalidate token
+Example: \GET /api/movies?search=action&director=Nolan&year=2023&tag=sci-fi&page=1\
 
 ## Testing
 
 ### Default User Credentials (for testing)
 After running the migrations and seeding, a default user will be created. You can use the following credentials to log in:
 
-- **Email**: `test@example.com`
-- **Password**: `password`
+- **Email**: \	est@example.com\
+- **Password**: \password\
 
 ### Setup Testing Environment
 
-Ensure `.env.testing` exists with a separate test database:
+Ensure \.env.testing\ exists with a separate test database:
 
-```env
+\\\env
 APP_ENV=testing
 APP_DEBUG=true
 DB_DATABASE=laravel_spa_challenge_testing
-```
+\\\
 
 Create the test database:
-```bash
-CREATE DATABASE laravel_spa_challenge_testing;
-```
+\\\ash
+mysql -u root -p -e "CREATE DATABASE laravel_spa_challenge_testing;"
+\\\
 
 ### Run Tests
 
-```bash
+\\\ash
 # All tests
 php artisan test
 
 # Specific test file
-php artisan test tests/Feature/ApiTest.php
+php artisan test tests/Feature/MovieApiSearchTest.php
 
 # With coverage report
 php artisan test --coverage
 
 # Watch mode (rerun tests on file changes)
 php artisan test --watch
-```
+\\\
 
 ### Test Coverage
 
 Current test coverage includes:
 
-| Feature | Test | Status |
-|---------|------|--------|
-| User Login | `user_can_login_and_receive_token` |
-| Protected Routes | `user_cannot_access_protected_routes_without_token` |
-| CRUD Operations | `authenticated_user_can_crud_movies` |
-| Logout | `user_can_logout` |
+| Feature | Test File | Status |
+|---------|-----------|--------|
+| Movie API CRUD | \	ests/Feature/ApiTest.php\ |  |
+| Movie Search & Filter | \	ests/Feature/MovieApiSearchTest.php\ |  |
+| Authentication | \	ests/Feature/Auth/RegistrationTest.php\ |  |
+| User Profile | \	ests/Feature/ProfileTest.php\ |  |
+| Movie Unit Model | \	ests/Unit/MovieTest.php\ |  |
 
-All 32+ assertions pass ensuring API reliability.
+All tests pass with proper isolation using \RefreshDatabase\ trait.
 
 ### Writing New Tests
 
-Tests are located in `tests/Feature/`. Example:
+Tests are located in \	ests/Feature/\ and \	ests/Unit/\. Example:
 
-```php
-#[\PHPUnit\Framework\Attributes\Test]
+\\\php
+#[\PHPUnit\Framework\Framework\Attributes\Test]
 public function authenticated_user_can_create_movie()
 {
-    $token = $this->user->createToken('TestApp')->plainTextToken;
-    $response = $this->postJson('/api/movies', [
+    \ = User::factory()->create();
+    
+    \ = \->actingAs(\)->postJson('/api/movies', [
         'title' => 'Test Movie',
         'director' => 'Test Director',
-    ], ['Authorization' => 'Bearer ' . $token]);
+        'description' => 'Test Description',
+        'duration' => 120,
+        'release_date' => '2025-01-01',
+        'tags' => 'test,movie'
+    ]);
     
-    $response->assertStatus(201);
+    \->assertStatus(201);
+    \->assertDatabaseHas('movies', ['title' => 'Test Movie']);
 }
-```
+\\\
 
-Run all tests
-Run specific test file
-...bash
-php artisan test tests/Feature/ApiTest.php
-Available Tests
-User Authentication: Login, logout, and token generation
+## Database Schema
 
-Protected Routes: Authorization checks on protected endpoints
-
-CRUD Operations: Create, read, update, delete movies
-
-Validation: Request validation and error handling
-
-Movie Operations: Search, filter, and list operations
-
-Database Schema
-Movies Table
-sql
+### Movies Table
+\\\sql
 CREATE TABLE movies (
-    id BIGINT PRIMARY KEY,
+    id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
     title VARCHAR(255) NOT NULL,
-    director VARCHAR(255) NULLABLE,
-    description TEXT NULLABLE,
-    duration INT NULLABLE,
-    release_date DATE NULLABLE,
-    tags VARCHAR(255) NULLABLE,
+    director VARCHAR(255),
+    description TEXT,
+    duration INT,
+    release_date DATE,
+    tags VARCHAR(255),
     created_at TIMESTAMP,
     updated_at TIMESTAMP
 );
-Users Table
-Standard Laravel users table with email/password authentication
+\\\
 
-Personal Access Tokens Table
-Stores Sanctum API tokens for authentication
+**Fields:**
+- \id\: Unique movie identifier
+- \	itle\: Movie title (required)
+- \director\: Director name (optional)
+- \description\: Movie synopsis (optional)
+- \duration\: Duration in minutes (optional)
+- \elease_date\: Release date in Y-m-d format (optional)
+- \	ags\: Comma-separated tags string (optional, displayed as chips in UI)
 
-Project Structure
-pgsql
-├── app/
-│   ├── Http/
-│   │   ├── Controllers/
-│   │   │   ├── Api/
-│   │   │   │   └── MovieApiController.php
-│   │   │   ├── Auth/
-│   │   │   │   └── AuthController.php
-│   │   │   └── ProfileController.php
-│   │   └── Middleware/
-│   ├── Models/
-│   │   ├── Movie.php
-│   │   └── User.php
-│   └── Providers/
-├── database/
-│   ├── migrations/
-│   └── seeders/
-├── resources/
-│   ├── js/
-│   │   ├── Pages/
-│   │   │   ├── Movies/
-│   │   │   │   ├── Index.vue
-│   │   │   │   ├── Create.vue
-│   │   │   │   └── Edit.vue
-│   │   │   └── Auth/
-│   │   └── app.js
-│   ├── css/
-│   │   └── app.css
-│   └── views/
-│       └── app.blade.php
-├── routes/
-│   ├── api.php
-│   ├── web.php
-│   └── auth.php
-├── tests/
-│   └── Feature/
-│       └── ApiTest.php
-└── public/
-Configuration
-Environment Variables
-Key environment variables in .env:
+### Users Table
+Standard Laravel users table with email/password authentication for session-based login.
 
-env
+### Personal Access Tokens Table
+Stores Laravel Sanctum API tokens for token-based API authentication.
+
+## Project Structure
+
+\\\
+Laravel-SPA-Challenge/
+ app/
+    Http/
+       Controllers/
+          Api/
+             MovieApiController.php       # RESTful API movie endpoints
+          Auth/
+             RegisteredUserController.php # User registration handler
+          MovieController.php              # Web controller (Inertia pages)
+       Requests/                            # Form request validation
+       Resources/                           # API resource classes
+       Middleware/                          # Custom middleware
+       Kernel.php                           # HTTP kernel configuration
+    Models/
+       Movie.php                            # Movie Eloquent model
+       User.php                             # User Eloquent model
+    Providers/
+        AppServiceProvider.php               # Service provider (shares Inertia props)
+        RouteServiceProvider.php             # Route service provider
+ bootstrap/
+    app.php                                  # Application bootstrap
+    providers.php                            # Service provider bootstrap
+ config/
+    app.php                                  # Application config
+    auth.php                                 # Authentication config
+    database.php                             # Database config
+    sanctum.php                              # Sanctum API config
+ database/
+    factories/
+       UserFactory.php                      # User factory for testing
+    migrations/
+       0001_01_01_000000_create_users_table.php
+       0001_01_01_000001_create_cache_table.php
+       2025_11_12_142018_create_movies_table.php
+       2025_11_13_123218_add_tags_to_movies_table.php
+       2025_11_13_225201_create_personal_access_tokens_table.php
+    seeders/
+        DatabaseSeeder.php                   # Main seeder (calls MoviesTableSeeder & UserFactory)
+        MoviesTableSeeder.php                # Seed 5 sample movies
+ resources/
+    js/
+       app.js                               # Main Vue app entry point
+       bootstrap.js                         # Bootstrap configuration (Axios, Inertia)
+       Components/                          # Reusable Vue components
+       Layouts/
+          AppLayout.vue                    # Main layout (header, nav, burger menu)
+       Pages/
+           Movies/
+              Index.vue                    # Movie grid with filters
+              Create.vue                   # Create movie form
+              Edit.vue                     # Edit movie form
+              Show.vue                     # Movie detail page with tags
+           Auth/
+               Login.vue                    # Login form (themed)
+               Register.vue                 # Registration form (themed)
+    css/
+       app.css                              # Global styles
+    views/
+        app.blade.php                        # Main Blade template
+ routes/
+    api.php                                  # API routes (Sanctum token auth)
+    auth.php                                 # Auth routes (session auth)
+    web.php                                  # Web routes (Inertia pages)
+    console.php                              # Artisan commands
+ storage/
+    app/                                     # File storage
+    framework/                               # Framework caches
+    logs/                                    # Application logs
+ tests/
+    Feature/
+       ApiTest.php                          # API CRUD tests
+       MovieApiSearchTest.php               # API search/filter tests
+       ProfileTest.php                      # Profile endpoint tests
+       Auth/
+           RegistrationTest.php             # Registration flow tests
+    Unit/
+       MovieTest.php                        # Movie model unit tests
+    TestCase.php                             # Base test case
+ public/
+    index.php                                # Application entry point
+    robots.txt
+    hot                                      # Vite dev server socket
+    build/                                   # Built assets (generated by Vite)
+ .env.example                                 # Environment variables template
+ artisan                                      # Laravel command line interface
+ composer.json                                # PHP dependencies
+ package.json                                 # Node dependencies
+ vite.config.js                               # Vite build configuration
+ tailwind.config.js                           # Tailwind CSS configuration
+ phpunit.xml                                  # PHPUnit test configuration
+ README.md                                    # This file
+\\\
+
+## Configuration
+
+### Environment Variables
+
+Key environment variables in \.env\:
+
+\\\env
 APP_NAME=Laravel-SPA-Challenge
 APP_ENV=local
 APP_DEBUG=true
@@ -351,53 +463,74 @@ DB_PASSWORD=
 
 SANCTUM_STATEFUL_DOMAINS=localhost:8000
 SESSION_DOMAIN=localhost
-Testing Environment
-To run the tests, ensure that your .env.testing file is set up for testing. This is important to avoid overwriting your production data. You can create a .env.testing file with the following content (use a separate database for testing):
+\\\
 
-env
+### Testing Environment
+
+To run tests, ensure \.env.testing\ is configured with a separate database:
+
+\\\env
+APP_ENV=testing
+APP_DEBUG=true
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=laravel_spa_challenge_testing
 DB_USERNAME=root
 DB_PASSWORD=
-Troubleshooting
-Database connection errors
-Verify MySQL is running.
+\\\
 
-Check .env database credentials.
+## Troubleshooting
 
-Ensure the database exists:
+### Database connection errors
+- Verify MySQL is running
+- Check \.env\ database credentials
+- Ensure the database exists: \CREATE DATABASE laravel_spa_challenge;\
 
-...bash
-CREATE DATABASE laravel_spa_challenge;
-Node Modules Issues
-Clear the cache:
-
-...bash
+### Node Modules Issues
+\\\ash
+# Clear the cache
 npm cache clean --force
-Reinstall dependencies:
 
-...bash
+# Reinstall dependencies
 rm -rf node_modules && npm install
-Laravel Cache Issues
-...bash
+\\\
+
+### Laravel Cache Issues
+\\\ash
 php artisan cache:clear
 php artisan config:clear
 php artisan view:clear
-Development Notes
-The API uses token-based authentication with Laravel Sanctum
+\\\
 
-All API responses follow RESTful conventions
+### Vite Hot Module Reload Issues
+- Ensure \
+pm run dev\ is running in a separate terminal
+- Check browser console for connection errors to HMR server
+- Verify \APP_URL\ in \.env\ matches your local URL
 
-Validation errors return 422 with error details
+### Port Already in Use
+\\\ash
+# If port 8000 is in use, start Laravel on a different port
+php artisan serve --port=8001
 
-The frontend uses Inertia.js for seamless SPA experience
+# If port 5173 (Vite) is in use, Vite will auto-increment to 5174, etc.
+\\\
 
-Tailwind CSS is configured for responsive design
+## Development Notes
 
-License
+- **Authentication**: The application uses Laravel session middleware for web routes and Sanctum tokens for API routes
+- **Validation**: Server-side validation enforces \date_format:Y-m-d\ for release dates; invalid dates are rejected
+- **API Responses**: All API responses follow RESTful conventions with proper status codes (201 created, 204 no content, 422 validation errors)
+- **Frontend**: Inertia.js automatically shares server props with Vue components; auth state available via \page.props.auth\
+- **Filters**: Movie filtering is available on both API and web routes with identical query parameters
+- **Tags**: Tags are stored as comma-separated strings; displayed as visual chips in the UI
+- **Responsive Design**: Uses Tailwind CSS breakpoints; mobile burger menu hidden on sm+ screens
+
+## License
+
 MIT License. See LICENSE file for details.
 
-Support:
-For issues or questions, please open an issue on the GitHub repository.
+## Support
+
+For issues or questions, please open an issue on the [GitHub repository](https://github.com/JoshStaff99/Laravel-SPA-Challenge).

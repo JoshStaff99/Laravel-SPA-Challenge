@@ -53,6 +53,16 @@
             <p class="text-gray-600 mb-1"><strong>Duration:</strong> {{ movie.duration }} mins</p>
             <p class="text-gray-600 mb-1"><strong>Release:</strong> {{ formatDate(movie.release_date) }}</p>
             <p class="text-gray-700 mt-3 text-sm">{{ movie.description }}</p>
+            <!-- Tags -->
+            <div v-if="movie.tags" class="mt-4 flex flex-wrap gap-2">
+              <span
+                v-for="tag in parseTags(movie.tags)"
+                :key="tag"
+                class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium"
+              >
+                {{ tag }}
+              </span>
+            </div>
           </div>
           <div class="bg-gray-50 border-t p-3 flex justify-end space-x-3">
             <InertiaLink :href="route('movies.show', movie.id)" class="text-blue-500 hover:text-blue-700">View</InertiaLink>
@@ -136,6 +146,12 @@ const goToPage = (pageNumber) => {
 // Format date
 const formatDate = (dateStr) => {
   return dateStr ? new Date(dateStr).toLocaleDateString() : 'N/A'
+}
+
+// Parse tags from comma-separated string
+const parseTags = (tagsStr) => {
+  if (!tagsStr) return []
+  return tagsStr.split(',').map(tag => tag.trim()).filter(tag => tag)
 }
 
 // Auth state
