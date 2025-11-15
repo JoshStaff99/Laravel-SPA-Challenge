@@ -281,11 +281,11 @@ Current test coverage includes:
 
 | Feature | Test File | Status |
 |---------|-----------|--------|
-| Movie API CRUD | \	ests/Feature/ApiTest.php\ |  |
-| Movie Search & Filter | \	ests/Feature/MovieApiSearchTest.php\ |  |
-| Authentication | \	ests/Feature/Auth/RegistrationTest.php\ |  |
-| User Profile | \	ests/Feature/ProfileTest.php\ |  |
-| Movie Unit Model | \	ests/Unit/MovieTest.php\ |  |
+| Movie API CRUD | tests/Feature/ApiTest.php |  |
+| Movie Search & Filter | tests/Feature/MovieApiSearchTest.php |  |
+| Authentication | tests/Feature/Auth/RegistrationTest.php |  |
+| User Profile | tests/Feature/ProfileTest.php |  |
+| Movie Unit Model | tests/Unit/MovieTest.php |  |
 
 All tests pass with proper isolation using \RefreshDatabase\ trait.
 
@@ -294,7 +294,7 @@ All tests pass with proper isolation using \RefreshDatabase\ trait.
 Tests are located in \	ests/Feature/\ and \	ests/Unit/\. Example:
 
 \\\php
-#[\PHPUnit\Framework\Framework\Attributes\Test]
+#[\PHPUnit\Framework\Attributes\Test]
 public function authenticated_user_can_create_movie()
 {
     \ = User::factory()->create();
@@ -353,93 +353,85 @@ Laravel-SPA-Challenge/
  app/
     Http/
        Controllers/
-          Api/
-             MovieApiController.php       # RESTful API movie endpoints
-          Auth/
-             RegisteredUserController.php # User registration handler
-          MovieController.php              # Web controller (Inertia pages)
-       Requests/                            # Form request validation
-       Resources/                           # API resource classes
-       Middleware/                          # Custom middleware
-       Kernel.php                           # HTTP kernel configuration
+          Api/MovieApiController.php
+          Auth/RegisteredUserController.php
+          MovieController.php
+       Requests/
+       Resources/
+       Middleware/
+       Kernel.php
     Models/
-       Movie.php                            # Movie Eloquent model
-       User.php                             # User Eloquent model
+       Movie.php
+       User.php
     Providers/
-        AppServiceProvider.php               # Service provider (shares Inertia props)
-        RouteServiceProvider.php             # Route service provider
+        AppServiceProvider.php
+        RouteServiceProvider.php
  bootstrap/
-    app.php                                  # Application bootstrap
-    providers.php                            # Service provider bootstrap
+    app.php
+    providers.php
  config/
-    app.php                                  # Application config
-    auth.php                                 # Authentication config
-    database.php                             # Database config
-    sanctum.php                              # Sanctum API config
+    app.php
+    auth.php
+    database.php
+    sanctum.php
  database/
     factories/
-       UserFactory.php                      # User factory for testing
+       UserFactory.php
     migrations/
-       0001_01_01_000000_create_users_table.php
-       0001_01_01_000001_create_cache_table.php
-       2025_11_12_142018_create_movies_table.php
-       2025_11_13_123218_add_tags_to_movies_table.php
-       2025_11_13_225201_create_personal_access_tokens_table.php
     seeders/
-        DatabaseSeeder.php                   # Main seeder (calls MoviesTableSeeder & UserFactory)
-        MoviesTableSeeder.php                # Seed 5 sample movies
+        DatabaseSeeder.php
+        MoviesTableSeeder.php
  resources/
     js/
-       app.js                               # Main Vue app entry point
-       bootstrap.js                         # Bootstrap configuration (Axios, Inertia)
-       Components/                          # Reusable Vue components
+       app.js
+       bootstrap.js
+       Components/
        Layouts/
-          AppLayout.vue                    # Main layout (header, nav, burger menu)
+          AppLayout.vue
        Pages/
            Movies/
-              Index.vue                    # Movie grid with filters
-              Create.vue                   # Create movie form
-              Edit.vue                     # Edit movie form
-              Show.vue                     # Movie detail page with tags
+              Index.vue
+              Create.vue
+              Edit.vue
+              Show.vue
            Auth/
-               Login.vue                    # Login form (themed)
-               Register.vue                 # Registration form (themed)
+               Login.vue
+               Register.vue
     css/
-       app.css                              # Global styles
+       app.css
     views/
-        app.blade.php                        # Main Blade template
+        app.blade.php
  routes/
-    api.php                                  # API routes (Sanctum token auth)
-    auth.php                                 # Auth routes (session auth)
-    web.php                                  # Web routes (Inertia pages)
-    console.php                              # Artisan commands
+    api.php
+    auth.php
+    web.php
+    console.php
  storage/
-    app/                                     # File storage
-    framework/                               # Framework caches
-    logs/                                    # Application logs
+    app/
+    framework/
+    logs/
  tests/
     Feature/
-       ApiTest.php                          # API CRUD tests
-       MovieApiSearchTest.php               # API search/filter tests
-       ProfileTest.php                      # Profile endpoint tests
-       Auth/
-           RegistrationTest.php             # Registration flow tests
+       ApiTest.php
+       MovieApiSearchTest.php
+       ProfileTest.php
+       Auth/RegistrationTest.php
     Unit/
-       MovieTest.php                        # Movie model unit tests
-    TestCase.php                             # Base test case
+       MovieTest.php
+    TestCase.php
  public/
-    index.php                                # Application entry point
+    index.php
     robots.txt
-    hot                                      # Vite dev server socket
-    build/                                   # Built assets (generated by Vite)
- .env.example                                 # Environment variables template
- artisan                                      # Laravel command line interface
- composer.json                                # PHP dependencies
- package.json                                 # Node dependencies
- vite.config.js                               # Vite build configuration
- tailwind.config.js                           # Tailwind CSS configuration
- phpunit.xml                                  # PHPUnit test configuration
- README.md                                    # This file
+    hot
+    build/
+ .env.example
+ artisan
+ composer.json
+ package.json
+ vite.config.js
+ tailwind.config.js
+ phpunit.xml
+ README.md
 \\\
 
 ## Configuration
