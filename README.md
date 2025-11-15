@@ -230,7 +230,7 @@ All protected routes require the \Authorization: Bearer {token}\ header.
 - \search\ - Filter by title or director name (substring match)
 - \director\ - Exact director name match
 - \year\ - Release year filter
-- \	ag\ - Filter by tag (comma-separated tags in database)
+- \	tag\ - Filter by tag (comma-separated tags in database)
 - \page\ - Pagination page number (default: 1)
 - \per_page\ - Results per page (default: 15)
 
@@ -241,7 +241,7 @@ Example: \GET /api/movies?search=action&director=Nolan&year=2023&tag=sci-fi&page
 ### Default User Credentials (for testing)
 After running the migrations and seeding, a default user will be created. You can use the following credentials to log in:
 
-- **Email**: \	est@example.com\
+- **Email**: \	test@example.com\
 - **Password**: \password\
 
 ### Setup Testing Environment
@@ -332,13 +332,13 @@ CREATE TABLE movies (
 
 **Fields:**
 - \id\: Unique movie identifier
-- \	itle\: Movie title (required)
+- \	title\: Movie title (required)
 - \director\: Director name (optional)
 - \description\: Movie synopsis (optional)
 - \duration\: Duration in minutes (optional)
 - \
-elease_date\: Release date in Y-m-d format (optional)
-- \	ags\: Comma-separated tags string (optional, displayed as chips in UI)
+release_date\: Release date in Y-m-d format (optional)
+- \	tags\: Comma-separated tags string (optional, displayed as chips in UI)
 
 ### Users Table
 Standard Laravel users table with email/password authentication for session-based login.
@@ -348,91 +348,32 @@ Stores Laravel Sanctum API tokens for token-based API authentication.
 
 ## Project Structure
 
-\\\
+```
 Laravel-SPA-Challenge/
- app/
-    Http/
-       Controllers/
-          Api/MovieApiController.php
-          Auth/RegisteredUserController.php
-          MovieController.php
-       Requests/
-       Resources/
-       Middleware/
-       Kernel.php
-    Models/
-       Movie.php
-       User.php
-    Providers/
-        AppServiceProvider.php
-        RouteServiceProvider.php
- bootstrap/
-    app.php
-    providers.php
- config/
-    app.php
-    auth.php
-    database.php
-    sanctum.php
- database/
-    factories/
-       UserFactory.php
-    migrations/
-    seeders/
-        DatabaseSeeder.php
-        MoviesTableSeeder.php
- resources/
-    js/
-       app.js
-       bootstrap.js
-       Components/
-       Layouts/
-          AppLayout.vue
-       Pages/
-           Movies/
-              Index.vue
-              Create.vue
-              Edit.vue
-              Show.vue
-           Auth/
-               Login.vue
-               Register.vue
-    css/
-       app.css
-    views/
-        app.blade.php
- routes/
-    api.php
-    auth.php
-    web.php
-    console.php
- storage/
-    app/
-    framework/
-    logs/
- tests/
-    Feature/
-       ApiTest.php
-       MovieApiSearchTest.php
-       ProfileTest.php
-       Auth/RegistrationTest.php
-    Unit/
-       MovieTest.php
-    TestCase.php
- public/
-    index.php
-    robots.txt
-    hot
-    build/
- .env.example
- artisan
- composer.json
- package.json
- vite.config.js
- tailwind.config.js
- phpunit.xml
- README.md
-\\\
+├── app/
+├── bootstrap/
+├── config/
+├── database/
+├── resources/
+├── routes/
+├── storage/
+├── tests/
+├── public/
+├── artisan
+├── composer.json
+├── package.json
+├── vite.config.js
+├── tailwind.config.js
+└── README.md
+```
+
+**Key directories:**
+- app/ - Application code (controllers, models, middleware)
+- resources/js/ - Vue components and pages
+- routes/ - Route definitions
+- database/ - Migrations and seeders
+- tests/ - Test suite
+- public/ - Entry point and built assets
 
 ## Configuration
 
