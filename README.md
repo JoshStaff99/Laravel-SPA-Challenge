@@ -38,7 +38,7 @@ A single-page application built with Laravel 12, Inertia.js, Vue.js 3, and Tailw
 
 If you want to get the app running quickly:
 
-\\\ash
+\\\bash
 # Clone and navigate
 git clone https://github.com/JoshStaff99/Laravel-SPA-Challenge.git
 cd Laravel-SPA-Challenge
@@ -55,23 +55,23 @@ This runs all necessary setup steps including composer install, npm install, mig
 ## Installation
 
 ### 1. Clone the repository
-\\\ash
+\\\bash
 git clone https://github.com/JoshStaff99/Laravel-SPA-Challenge.git
 cd Laravel-SPA-Challenge
 \\\
 
 ### 2. Install PHP dependencies
-\\\ash
+\\\bash
 composer install
 \\\
 
 ### 3. Install Node dependencies
-\\\ash
+\\\bash
 npm install
 \\\
 
 ### 4. Environment setup
-\\\ash
+\\\bash
 cp .env.example .env
 php artisan key:generate
 \\\
@@ -91,17 +91,17 @@ DB_PASSWORD=
 
 Ensure the database exists before running migrations:
 
-\\\ash
+\\\bash
 mysql -u root -p -e "CREATE DATABASE laravel_spa_challenge;"
 \\\
 
 ### 6. Run migrations and seeders
-\\\ash
+\\\bash
 php artisan migrate --seed
 \\\
 
 ### 7. Build frontend assets
-\\\ash
+\\\bash
 npm run build
 \\\
 
@@ -111,7 +111,7 @@ npm run build
 
 To start the development server with live reload:
 
-\\\ash
+\\\bash
 # Terminal 1: Start Vite dev server (watches Vue/JS/CSS changes)
 npm run dev
 
@@ -122,7 +122,7 @@ php artisan serve
 The application will be available at \http://localhost:8000\
 
 ### Production Build
-\\\ash
+\\\bash
 npm run build
 php artisan serve
 \\\
@@ -141,7 +141,7 @@ pm install\
 7. **Build frontend**: \
 pm run build\
 8. **Cache config**: \php artisan config:cache && php artisan route:cache\
-9. **Set permissions**: Ensure \storage/\ and \ootstrap/cache/\ are writable
+9. **Set permissions**: Ensure \storage/\ and \bootstrap/cache/\ are writable
 10. **Use a web server**: Configure Nginx or Apache to point to the \public/\ directory
 
 ### Recommended web server configuration:
@@ -255,13 +255,13 @@ DB_DATABASE=laravel_spa_challenge_testing
 \\\
 
 Create the test database:
-\\\ash
+\\\bash
 mysql -u root -p -e "CREATE DATABASE laravel_spa_challenge_testing;"
 \\\
 
 ### Run Tests
 
-\\\ash
+\\\bash
 # All tests
 php artisan test
 
@@ -336,7 +336,8 @@ CREATE TABLE movies (
 - \director\: Director name (optional)
 - \description\: Movie synopsis (optional)
 - \duration\: Duration in minutes (optional)
-- \elease_date\: Release date in Y-m-d format (optional)
+- \
+elease_date\: Release date in Y-m-d format (optional)
 - \	ags\: Comma-separated tags string (optional, displayed as chips in UI)
 
 ### Users Table
@@ -488,7 +489,7 @@ DB_PASSWORD=
 - Ensure the database exists: \CREATE DATABASE laravel_spa_challenge;\
 
 ### Node Modules Issues
-\\\ash
+\\\bash
 # Clear the cache
 npm cache clean --force
 
@@ -497,7 +498,7 @@ rm -rf node_modules && npm install
 \\\
 
 ### Laravel Cache Issues
-\\\ash
+\\\bash
 php artisan cache:clear
 php artisan config:clear
 php artisan view:clear
@@ -510,7 +511,7 @@ pm run dev\ is running in a separate terminal
 - Verify \APP_URL\ in \.env\ matches your local URL
 
 ### Port Already in Use
-\\\ash
+\\\bash
 # If port 8000 is in use, start Laravel on a different port
 php artisan serve --port=8001
 
