@@ -115,7 +115,7 @@ class MoviesTableSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'title' => 'kingdom of Heaven',
+                'title' => 'Kingdom of Heaven',
                 'description' => 'Aided by his advisor Tiberias, Crusader Balian learns the true meaning of knighthood. Enlightened, he seeks to establish peace between Jerusalem and the East engaged in the Holy War.',
                 'director' => 'Ridley Scott',
                 'release_date' => '2005-05-06',

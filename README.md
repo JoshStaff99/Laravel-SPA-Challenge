@@ -439,7 +439,7 @@ php artisan view:clear
 
 ### Vite Hot Module Reload Issues
 - Ensure \
-pm run dev\ is running in a separate terminal
+npm run dev\ is running in a separate terminal
 - Check browser console for connection errors to HMR server
 - Verify \APP_URL\ in \.env\ matches your local URL
 
